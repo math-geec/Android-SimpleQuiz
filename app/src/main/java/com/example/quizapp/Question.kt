@@ -1,5 +1,6 @@
 package com.example.quizapp
 
+// Create a Question Data Model Class
 data class Question (
     val id: Int,
     val question: String,
