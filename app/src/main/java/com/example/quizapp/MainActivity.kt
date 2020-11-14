@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
                     "Please enter your name", Toast.LENGTH_SHORT).show()
             }else{
                 val intent = Intent(this, QuizQuestionActivity::class.java)
+                // Pass the name through intent using the constant variable which we have created.
+                intent.putExtra(Constants.USER_NAME, et_name.text.toString())
                 startActivity(intent)
                 // close the current activity
                 finish()

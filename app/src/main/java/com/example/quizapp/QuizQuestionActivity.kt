@@ -1,5 +1,6 @@
 package com.example.quizapp
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -20,11 +21,15 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
     private var mQuestionsList: ArrayList<Question>? = null
     private var mSelectedOptionPosition: Int = 0
     private var mCorrectAnswers: Int = 0
+    private var mUserName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // This is used to align the xml view to this class
         setContentView(R.layout.activity_quiz_question)
+
+        // Get the NAME from intent and assign it the variable.
+        mUserName = intent.getStringExtra(Constants.USER_NAME)
 
         // Get the list of question here to show in the UI
         // Make the questions list and the current position variable global
@@ -98,11 +103,19 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
                         }
                         else -> {
 
-                            Toast.makeText(
-                                this,
-                                "You have successfully completed the quiz.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            // Toast.makeText(
+                            //     this,
+                            //     "You have successfully completed the quiz.",
+                            //     Toast.LENGTH_SHORT
+                            // ).show()
+
+                            // remove the toast message and launch the result screen which we have created and also pass the user name and score details to it
+                            val intent = Intent(this, ResultActivity::class.java)
+                            intent.putExtra(Constants.USER_NAME, mUserName)
+                            intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
+                            intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList!!.size)
+                            startActivity(intent)
+                            finish()
                         }
                     }
                 } else {
