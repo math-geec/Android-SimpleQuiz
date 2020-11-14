@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_quiz_question.*
 
@@ -54,6 +55,7 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         tv_option_two.setOnClickListener(this)
         tv_option_three.setOnClickListener(this)
         tv_option_four.setOnClickListener(this)
+        btn_submit.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -79,15 +81,66 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
 
                 selectedOptionView(tv_option_four, 4)
             }
+
+            // Adding a click event for submit button. And change the questions and check the selected answers.
+            R.id.btn_submit -> {
+
+                if (mSelectedOptionPosition == 0) {
+
+                    mCurrentPosition++
+
+                    when {
+
+                        mCurrentPosition <= mQuestionsList!!.size -> {
+
+                            setQuestion()
+                        }
+                        else -> {
+
+                            Toast.makeText(
+                                this,
+                                "You have successfully completed the quiz.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } else {
+                    val question = mQuestionsList?.get(mCurrentPosition - 1)
+
+                    // This is to check if the answer is wrong
+                    if (question!!.correctAnswer != mSelectedOptionPosition) {
+                        answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+                    }
+
+                    // This is for correct answer
+                    answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
+
+                    if (mCurrentPosition == mQuestionsList!!.size) {
+                        btn_submit.text = "FINISH"
+                    } else {
+                        btn_submit.text = "GO TO NEXT QUESTION"
+                    }
+
+                    mSelectedOptionPosition = 0
+                }
+
+            }
         }
     }
 
-     // A function for setting the question to UI components.
+    // A function for setting the question to UI components.
     private fun setQuestion() {
         // Getting the question from the list with the help of current position.
         val question = mQuestionsList!!.get(mCurrentPosition - 1)
 
         defaultOptionsView()
+
+        // Check here if the position of question is last then change the text of the button.
+        if (mCurrentPosition == mQuestionsList!!.size) {
+            btn_submit.text = "FINISH"
+        } else {
+            btn_submit.text = "SUBMIT"
+        }
 
         progressBar.progress = mCurrentPosition
         tv_progress.text = "$mCurrentPosition" + "/" + progressBar.getMax()
@@ -135,5 +188,37 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
             this@QuizQuestionActivity,
             R.drawable.selected_option_border_bg
         )
+    }
+
+    // A function for answer view which is used to highlight the answer is wrong or right.
+    private fun answerView(answer: Int, drawableView: Int) {
+
+        when (answer) {
+
+            1 -> {
+                tv_option_one.background = ContextCompat.getDrawable(
+                    this@QuizQuestionActivity,
+                    drawableView
+                )
+            }
+            2 -> {
+                tv_option_two.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+            3 -> {
+                tv_option_three.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+            4 -> {
+                tv_option_four.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+        }
     }
 }
